@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
 
 class StockMovement extends Model
 {
@@ -191,7 +190,8 @@ class StockMovement extends Model
     public function getFormattedQuantityAttribute(): string
     {
         $sign = $this->quantity > 0 ? '+' : '';
-        return $sign . number_format($this->quantity, 2);
+
+        return $sign.number_format($this->quantity, 2);
     }
 
     /**

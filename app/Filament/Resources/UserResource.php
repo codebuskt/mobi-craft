@@ -4,13 +4,13 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\Role;
-use App\Models\Tenant;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -39,7 +39,7 @@ class UserResource extends Resource
                         Forms\Components\TextInput::make('password')
                             ->password()
                             ->label('Password')
-                            ->dehydrateStateUsing(fn (string $state): string => \Illuminate\Support\Facades\Hash::make($state))
+                            ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
                             ->dehydrated(fn (?string $state): bool => filled($state))
                             ->required(fn (string $context): bool => $context === 'create')
                             ->helperText('Leave blank to keep current password'),

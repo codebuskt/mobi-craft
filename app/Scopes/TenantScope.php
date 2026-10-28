@@ -2,10 +2,10 @@
 
 namespace App\Scopes;
 
+use App\Models\Tenant;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
-use App\Models\Tenant;
 
 class TenantScope implements Scope
 {
@@ -22,11 +22,11 @@ class TenantScope implements Scope
         $tenant = Tenant::getCurrentTenant();
 
         if ($tenant) {
-            $builder->where($model->getTable() . '.tenant_id', $tenant->id);
+            $builder->where($model->getTable().'.tenant_id', $tenant->id);
         } elseif ($model->getTable() !== 'tenants') {
             // If no tenant is set and model has tenant_id, exclude tenant-scoped records
             // This prevents super admin from accidentally seeing tenant data without context
-            $builder->whereNull($model->getTable() . '.tenant_id');
+            $builder->whereNull($model->getTable().'.tenant_id');
         }
     }
 

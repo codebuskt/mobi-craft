@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TenantResource\Pages;
-use App\Models\SubscriptionPlan;
 use App\Models\Tenant;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -99,7 +98,7 @@ class TenantResource extends Resource
                     ->weight('medium'),
                 Tables\Columns\TextColumn::make('slug')
                     ->label('Subdomain')
-                    ->formatStateUsing(fn (string $state) => $state . '.mobicraft.test')
+                    ->formatStateUsing(fn (string $state) => $state.'.mobicraft.test')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('domain')

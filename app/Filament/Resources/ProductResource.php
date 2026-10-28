@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class ProductResource extends Resource
 {
@@ -46,7 +47,7 @@ class ProductResource extends Resource
                             ->maxLength(255)
                             ->label('Product Name')
                             ->live(onBlur: true)
-                            ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', \Illuminate\Support\Str::slug($state)) : null),
+                            ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
                         Forms\Components\TextInput::make('slug')
                             ->required()
                             ->maxLength(255)
@@ -174,7 +175,7 @@ class ProductResource extends Resource
                             ->helperText('Reserved for pending orders'),
                         Forms\Components\Placeholder::make('available_quantity')
                             ->label('Available')
-                            ->content(fn (Product $record) => '৳' . number_format($record->available_quantity, 2))
+                            ->content(fn (Product $record) => '৳'.number_format($record->available_quantity, 2))
                             ->visible(fn (Product $record) => $record->exists),
                         Forms\Components\TextInput::make('reorder_level')
                             ->numeric()
@@ -535,7 +536,7 @@ class ProductResource extends Resource
         $newProduct = $product->replicate();
         $newProduct->sku = null; // Will be auto-generated
         $newProduct->barcode = null;
-        $newProduct->name = $product->name . ' (Copy)';
+        $newProduct->name = $product->name.' (Copy)';
         $newProduct->slug = null; // Will be auto-generated from name
         $newProduct->status = 'draft';
         $newProduct->stock_quantity = 0;

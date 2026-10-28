@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class Tenant extends Model
 {
@@ -66,7 +64,7 @@ class Tenant extends Model
             return false;
         }
 
-        if ($this->trial_ends_at && now()->gt($this->trial_ends_at) && !$this->subscription_ends_at) {
+        if ($this->trial_ends_at && now()->gt($this->trial_ends_at) && ! $this->subscription_ends_at) {
             return false;
         }
 
@@ -106,7 +104,7 @@ class Tenant extends Model
      */
     public function getIdentificationDomain()
     {
-        return $this->domain ?: $this->slug . '.test';
+        return $this->domain ?: $this->slug.'.test';
     }
 
     /**

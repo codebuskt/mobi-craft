@@ -137,7 +137,7 @@ class ShopProfile extends Model
         $symbol = $this->currency_symbol;
         $precision = 2;
 
-        return $symbol . number_format($amount, $precision, '.', ',');
+        return $symbol.number_format($amount, $precision, '.', ',');
     }
 
     /**
@@ -149,7 +149,7 @@ class ShopProfile extends Model
         $year = now()->format('Y');
 
         // Get the latest sale for this tenant this year
-        $latestSale = \App\Models\Sale::where('tenant_id', $this->tenant_id)
+        $latestSale = Sale::where('tenant_id', $this->tenant_id)
             ->whereYear('created_at', now()->year)
             ->latest('id')
             ->first();
@@ -169,7 +169,7 @@ class ShopProfile extends Model
         $prefix = $this->repair_ticket_prefix ?? 'REP';
         $year = now()->format('Y');
 
-        $latestTicket = \App\Models\RepairTicket::where('tenant_id', $this->tenant_id)
+        $latestTicket = RepairTicket::where('tenant_id', $this->tenant_id)
             ->whereYear('created_at', now()->year)
             ->latest('id')
             ->first();
@@ -189,7 +189,7 @@ class ShopProfile extends Model
         $prefix = $this->purchase_order_prefix ?? 'PO';
         $year = now()->format('Y');
 
-        $latestPO = \App\Models\PurchaseOrder::where('tenant_id', $this->tenant_id)
+        $latestPO = PurchaseOrder::where('tenant_id', $this->tenant_id)
             ->whereYear('created_at', now()->year)
             ->latest('id')
             ->first();
@@ -209,7 +209,7 @@ class ShopProfile extends Model
         $prefix = $this->quotation_prefix ?? 'QUO';
         $year = now()->format('Y');
 
-        $latestQuotation = \App\Models\Quotation::where('tenant_id', $this->tenant_id)
+        $latestQuotation = Quotation::where('tenant_id', $this->tenant_id)
             ->whereYear('created_at', now()->year)
             ->latest('id')
             ->first();
@@ -261,7 +261,7 @@ class ShopProfile extends Model
             return null;
         }
 
-        return asset('storage/' . $this->logo);
+        return asset('storage/'.$this->logo);
     }
 
     /**

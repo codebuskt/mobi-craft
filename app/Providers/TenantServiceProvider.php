@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Database\Eloquent\Model;
-use App\Scopes\TenantScope;
 use App\Models\Tenant;
+use App\Scopes\TenantScope;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\ServiceProvider;
 
 class TenantServiceProvider extends ServiceProvider
 {
@@ -26,7 +26,7 @@ class TenantServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Add global tenant scope to all models that have tenant_id column
-        Model::addGlobalScope(new TenantScope());
+        Model::addGlobalScope(new TenantScope);
 
         // Register tenant-aware queue connection
         // This ensures queued jobs have the correct tenant context

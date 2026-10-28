@@ -88,7 +88,7 @@ class StockMovementResource extends Resource
                         Forms\Components\Placeholder::make('total_cost')
                             ->label('Total Cost')
                             ->content(fn (StockMovement $record) => $record->exists
-                                ? '৳' . number_format($record->total_cost, 2)
+                                ? '৳'.number_format($record->total_cost, 2)
                                 : '৳0.00 (calculated automatically)'),
                     ])->columns(2),
 

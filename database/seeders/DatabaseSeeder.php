@@ -2,13 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Role;
 use App\Models\SubscriptionPlan;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -274,7 +275,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'super-admin@mobicraft.test',
         ], [
             'name' => 'Super Admin',
-            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'password' => Hash::make('password'),
             'phone' => '+8801700000000',
             'tenant_id' => $tenant->id,
             'status' => true,
@@ -287,10 +288,10 @@ class DatabaseSeeder extends Seeder
 
         // Grant all permissions to the role
         foreach (['tenants.manage', 'users.manage', 'roles.manage', 'subscription-plans.manage',
-                    'customers.manage', 'products.manage', 'inventory.manage', 'purchases.manage',
-                    'sales.manage', 'repairs.manage', 'suppliers.manage', 'expenses.manage',
-                    'payroll.manage', 'reports.view', 'reports.export', 'settings.manage',
-                    'notifications.manage'] as $permissionSlug) {
+            'customers.manage', 'products.manage', 'inventory.manage', 'purchases.manage',
+            'sales.manage', 'repairs.manage', 'suppliers.manage', 'expenses.manage',
+            'payroll.manage', 'reports.view', 'reports.export', 'settings.manage',
+            'notifications.manage'] as $permissionSlug) {
             $permission = Permission::firstOrCreate([
                 'slug' => $permissionSlug,
                 'name' => ucwords(str_replace(['-', '_'], ' ', $permissionSlug)),
@@ -306,9 +307,9 @@ class DatabaseSeeder extends Seeder
         // Log the seeded data
         $this->command->info("Seeded super admin: {$superAdmin->email}");
         $this->command->info("Seeded tenant: {$tenant->name} ({$tenant->slug})");
-        $this->command->info("Seeded roles: " . Role::count());
-        $this->command->info("Seeded permissions: " . Permission::count());
-        $this->command->info("Seeded subscription plans: " . SubscriptionPlan::count());
+        $this->command->info('Seeded roles: '.Role::count());
+        $this->command->info('Seeded permissions: '.Permission::count());
+        $this->command->info('Seeded subscription plans: '.SubscriptionPlan::count());
     }
 
     /**

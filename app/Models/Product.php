@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
@@ -171,7 +170,7 @@ class Product extends Model
      */
     public function getCostPriceFormattedAttribute(): string
     {
-        return '৳' . number_format($this->cost_price, 2);
+        return '৳'.number_format($this->cost_price, 2);
     }
 
     /**
@@ -179,7 +178,7 @@ class Product extends Model
      */
     public function getSalePriceFormattedAttribute(): string
     {
-        return '৳' . number_format($this->sale_price, 2);
+        return '৳'.number_format($this->sale_price, 2);
     }
 
     /**
@@ -203,7 +202,7 @@ class Product extends Model
      */
     public function getEffectiveSalePriceFormattedAttribute(): string
     {
-        return '৳' . number_format($this->getEffectiveSalePriceAttribute(), 2);
+        return '৳'.number_format($this->getEffectiveSalePriceAttribute(), 2);
     }
 
     /**
@@ -220,6 +219,7 @@ class Product extends Model
     public function isLowStock(): bool
     {
         $available = $this->available_quantity;
+
         return $available > 0 && $available <= (float) $this->reorder_level;
     }
 
@@ -309,24 +309,24 @@ class Product extends Model
     /**
      * Get the formatted price including tax.
      */
-    public function getPriceWithTaxFormattedAttribute(float $price = null): string
+    public function getPriceWithTaxFormattedAttribute(?float $price = null): string
     {
         $price = $price ?? $this->getEffectiveSalePriceAttribute();
         $taxRate = $this->tax_inclusive ? 0 : ($this->tax_rate ?? 0);
         $taxAmount = $price * ($taxRate / 100);
         $total = $price + $taxAmount;
 
-        return '৳' . number_format($total, 2);
+        return '৳'.number_format($total, 2);
     }
 
     /**
      * Get the formatted price without tax.
      */
-    public function getPriceWithoutTaxFormattedAttribute(float $price = null): string
+    public function getPriceWithoutTaxFormattedAttribute(?float $price = null): string
     {
         $price = $price ?? $this->getEffectiveSalePriceAttribute();
 
-        return '৳' . number_format($price, 2);
+        return '৳'.number_format($price, 2);
     }
 
     /**
@@ -396,10 +396,10 @@ class Product extends Model
     {
         return $query->where(function ($q) use ($search) {
             $q->where('name', 'like', "%{$search}%")
-              ->orWhere('sku', 'like', "%{$search}%")
-              ->orWhere('barcode', 'like', "%{$search}%")
-              ->orWhere('short_description', 'like', "%{$search}%")
-              ->orWhere('meta_title', 'like', "%{$search}%");
+                ->orWhere('sku', 'like', "%{$search}%")
+                ->orWhere('barcode', 'like', "%{$search}%")
+                ->orWhere('short_description', 'like', "%{$search}%")
+                ->orWhere('meta_title', 'like', "%{$search}%");
         });
     }
 
@@ -409,7 +409,7 @@ class Product extends Model
     public function scopeSellable($query): Builder
     {
         return $query->where('status', 'active')
-                     ->where('is_pos_visible', true);
+            ->where('is_pos_visible', true);
     }
 
     /**

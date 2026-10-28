@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
 
 class Customer extends Model
 {
@@ -140,6 +139,7 @@ class Customer extends Model
     public function hasAvailableCredit(float $amount = 0): bool
     {
         $available = $this->credit_limit - $this->outstanding_balance;
+
         return $available >= $amount;
     }
 
@@ -218,10 +218,10 @@ class Customer extends Model
 
         // Format as +8801XXXXXXXXX
         if (strlen($digits) === 10 || strlen($digits) === 11) {
-            return '+880' . $digits;
+            return '+880'.$digits;
         }
 
-        return '+880' . $digits;
+        return '+880'.$digits;
     }
 
     /**

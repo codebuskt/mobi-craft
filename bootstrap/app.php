@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Middleware\EnsureEmailIsVerified;
+use App\Http\Middleware\TenantMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,17 +16,17 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->api(prepend: [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            EnsureFrontendRequestsAreStateful::class,
         ]);
 
         // Add TenantMiddleware to web group AFTER session middleware
         $middleware->web(append: [
-            \App\Http\Middleware\TenantMiddleware::class,
+            TenantMiddleware::class,
         ]);
 
         $middleware->alias([
-            'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
-            'tenant' => \App\Http\Middleware\TenantMiddleware::class,
+            'verified' => EnsureEmailIsVerified::class,
+            'tenant' => TenantMiddleware::class,
         ]);
 
         //

@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\InventoryLocationResource\Pages;
 
 use App\Filament\Resources\InventoryLocationResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateInventoryLocation extends CreateRecord

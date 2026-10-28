@@ -112,17 +112,17 @@ class CustomerResource extends Resource
                         Forms\Components\Placeholder::make('outstanding_balance')
                             ->label('Outstanding Balance')
                             ->content(fn (Customer $record) => $record->exists
-                                ? '৳' . number_format($record->outstanding_balance, 2)
+                                ? '৳'.number_format($record->outstanding_balance, 2)
                                 : '৳0.00 (new customer)'),
                         Forms\Components\Placeholder::make('available_credit')
                             ->label('Available Credit')
                             ->content(fn (Customer $record) => $record->exists
-                                ? '৳' . number_format($record->available_credit, 2)
+                                ? '৳'.number_format($record->available_credit, 2)
                                 : '৳0.00'),
                         Forms\Components\Placeholder::make('lifetime_value')
                             ->label('Lifetime Value')
                             ->content(fn (Customer $record) => $record->exists
-                                ? '৳' . number_format($record->lifetime_value, 2)
+                                ? '৳'.number_format($record->lifetime_value, 2)
                                 : '৳0.00'),
                     ])->columns(2),
 
