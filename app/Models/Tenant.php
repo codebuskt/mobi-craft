@@ -50,6 +50,14 @@ class Tenant extends Model
     }
 
     /**
+     * Get the shop profile.
+     */
+    public function shopProfile()
+    {
+        return $this->hasOne(ShopProfile::class);
+    }
+
+    /**
      * Check if tenant is active.
      */
     public function getIsActiveAttribute()

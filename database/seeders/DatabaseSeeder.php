@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->seedRolesAndPermissions();
         $this->seedSubscriptionPlans();
         $this->seedSystemSuperAdmin();
+        $this->seedDefaultShopProfile();
     }
 
     /**
@@ -308,5 +309,64 @@ class DatabaseSeeder extends Seeder
         $this->command->info("Seeded roles: " . Role::count());
         $this->command->info("Seeded permissions: " . Permission::count());
         $this->command->info("Seeded subscription plans: " . SubscriptionPlan::count());
+    }
+
+    /**
+     * Seed default shop profile for the super admin tenant.
+     */
+    protected function seedDefaultShopProfile(): void
+    {
+        $tenant = Tenant::where('slug', 'super-admin')->first();
+
+        if ($tenant && ! $tenant->shopProfile) {
+            $tenant->shopProfile()->create([
+                'business_name' => 'MSTechSoft Platform',
+                'address' => 'Dhaka, Bangladesh',
+                'city' => 'Dhaka',
+                'state' => 'Dhaka',
+                'postal_code' => '1000',
+                'country' => 'Bangladesh',
+                'phone' => '+8801700000000',
+                'email' => 'support@mstechsoft.com',
+                'website' => 'https://mstechsoft.com',
+                'currency' => 'BDT',
+                'currency_symbol' => '৳',
+                'timezone' => 'Asia/Dhaka',
+                'locale' => 'en',
+                'date_format' => 'd/m/Y',
+                'time_format' => 'H:i',
+                'default_tax_rate' => 15.00,
+                'tax_label' => 'VAT',
+                'tax_inclusive' => false,
+                'payment_terms_days' => 0,
+                'rounding_precision' => 0.50,
+                'invoice_prefix' => 'INV',
+                'repair_ticket_prefix' => 'REP',
+                'purchase_order_prefix' => 'PO',
+                'quotation_prefix' => 'QUO',
+                'enable_barcode_scanner' => true,
+                'enable_customer_display' => false,
+                'auto_print_receipt' => false,
+                'receipt_printer_type' => 'thermal',
+                'receipt_width' => 80,
+                'enable_imei_tracking' => true,
+                'default_warranty_days' => 30,
+                'require_customer_approval' => true,
+                'enable_quality_check' => true,
+                'allow_negative_stock' => false,
+                'track_serial_numbers' => true,
+                'enable_low_stock_alerts' => true,
+                'low_stock_threshold' => 5,
+                'email_notifications' => true,
+                'sms_notifications' => false,
+                'invoice_terms' => 'Payment due within stated terms. Late payments may incur interest.',
+                'repair_terms' => 'Repairs are performed based on customer approval. Warranty covers parts and labor for the specified period.',
+                'warranty_terms' => 'Warranty does not cover physical damage, liquid damage, or unauthorized repairs.',
+                'is_setup_complete' => true,
+                'setup_completed_at' => now(),
+            ]);
+
+            $this->command->info("Seeded default shop profile for: {$tenant->name}");
+        }
     }
 }
