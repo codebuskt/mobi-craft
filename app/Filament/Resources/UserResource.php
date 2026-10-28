@@ -112,9 +112,9 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('role.name')
                     ->label('Role')
                     ->badge()
-                    ->color(fn (Role $record): string => $record->is_system ? 'success' : 'info')
-                    ->formatStateUsing(fn (Role $record): string => $record->name)
-                    ->sortable(),
+                    ->color(fn (User $record): string => $record->role?->is_system ? 'success' : 'info')
+                    ->formatStateUsing(fn (User $record): string => $record->role?->name ?? '—')
+                    ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('roles.name', $direction)->join('roles', 'users.role_id', '=', 'roles.id')),
                 Tables\Columns\IconColumn::make('status')
                     ->label('Active')
                     ->boolean()
