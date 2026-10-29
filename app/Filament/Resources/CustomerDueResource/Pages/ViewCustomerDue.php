@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CustomerDueResource\Pages;
 
 use App\Filament\Resources\CustomerDueResource;
+use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewCustomerDue extends ViewRecord
@@ -12,7 +13,7 @@ class ViewCustomerDue extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            EditCustomerDue::make(),
+            EditRecord::make(),
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PurchaseOrderResource\Pages;
 
 use App\Filament\Resources\PurchaseOrderResource;
+use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewPurchaseOrder extends ViewRecord
@@ -12,7 +13,7 @@ class ViewPurchaseOrder extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            EditPurchaseOrder::make(),
+            EditRecord::make(),
         ];
     }
 }

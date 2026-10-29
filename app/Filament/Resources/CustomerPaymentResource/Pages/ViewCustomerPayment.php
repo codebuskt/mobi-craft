@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CustomerPaymentResource\Pages;
 
 use App\Filament\Resources\CustomerPaymentResource;
+use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewCustomerPayment extends ViewRecord
@@ -12,7 +13,7 @@ class ViewCustomerPayment extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            EditCustomerPayment::make(),
+            EditRecord::make(),
         ];
     }
 }

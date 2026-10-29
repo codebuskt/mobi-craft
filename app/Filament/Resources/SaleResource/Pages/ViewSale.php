@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SaleResource\Pages;
 
 use App\Filament\Resources\SaleResource;
+use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewSale extends ViewRecord
@@ -12,7 +13,7 @@ class ViewSale extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            EditSale::make(),
+            EditRecord::make(),
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PurchaseReceiptResource\Pages;
 
 use App\Filament\Resources\PurchaseReceiptResource;
+use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewPurchaseReceipt extends ViewRecord
@@ -12,7 +13,7 @@ class ViewPurchaseReceipt extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            EditPurchaseReceipt::make(),
+            EditRecord::make(),
         ];
     }
 }
