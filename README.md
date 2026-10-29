@@ -31,6 +31,7 @@ MobiCraft is a comprehensive SaaS platform designed for mobile phone shops, repa
 - **🌐 REST API** - Versioned API for mobile app integration
 - **🌙 Dark Mode** - Full light/dark theme support
 - **🌐 Bangla/English** - Bilingual UI support
+- **📱 Used Device Management** - IMEI/serial tracking, purchase/inspection, refurbishment, margin reporting
 
 ---
 
@@ -248,10 +249,10 @@ Full OpenAPI spec available at `/api/documentation` (when implemented).
 ## Roadmap
 
 - [x] **Phase 0** - Foundation (Auth, Tenancy, Roles, Admin Panel)
-- [ ] **Phase 1** - MVP Business Operations (Customers, Products, POS, Sales)
-- [ ] **Phase 2** - Repair Management (Tickets, Workflow, Parts)
-- [ ] **Phase 3** - Financial & Staff (Payroll, Advanced Reports)
-- [ ] **Phase 4** - Used Devices (IMEI Tracking, Refurbishment)
+- [x] **Phase 1** - MVP Business Operations (Customers, Products, POS, Sales)
+- [x] **Phase 2** - Repair Management (Tickets, Workflow, Parts)
+- [x] **Phase 3** - Financial & Staff (Payroll, Advanced Reports)
+- [x] **Phase 4** - Used Devices (IMEI Tracking, Refurbishment)
 - [ ] **Phase 5** - SaaS Commercialization (Billing, Payments)
 - [ ] **Phase 6** - Customer Storefront (Public Shop)
 - [ ] **Phase 7** - Expansion (Flutter App, AI, Multi-branch)
