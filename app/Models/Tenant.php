@@ -100,14 +100,6 @@ class Tenant extends Model
     }
 
     /**
-     * Check if tenant is on trial.
-     */
-    public function getIsTrialAttribute()
-    {
-        return $this->status === 'trial';
-    }
-
-    /**
      * Check if tenant is on trial period.
      */
     public function onTrial(): bool
