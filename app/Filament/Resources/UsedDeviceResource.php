@@ -380,13 +380,13 @@ class UsedDeviceResource extends Resource
                 BadgeColumn::make('condition_grade')
                     ->label('Condition')
                     ->colors([
-                        'success' => 'a_plus',
-                        'success' => 'a',
-                        'info' => 'b_plus',
-                        'info' => 'b',
-                        'warning' => 'c_plus',
-                        'warning' => 'c',
-                        'danger' => 'd',
+                        'a_plus' => 'success',
+                        'a' => 'success',
+                        'b_plus' => 'info',
+                        'b' => 'info',
+                        'c_plus' => 'warning',
+                        'c' => 'warning',
+                        'd' => 'danger',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'a_plus' => 'A+',
@@ -397,22 +397,15 @@ class UsedDeviceResource extends Resource
                         'c' => 'C',
                         'd' => 'D',
                         default => ucfirst($state),
-                    })
-                    ->getColorUsing(fn (string $state): string => match ($state) {
-                        'a_plus', 'a' => 'success',
-                        'b_plus', 'b' => 'info',
-                        'c_plus', 'c' => 'warning',
-                        'd' => 'danger',
-                        default => 'gray',
                     }),
 
                 BadgeColumn::make('functional_status')
                     ->label('Status')
                     ->colors([
-                        'success' => 'fully_functional',
-                        'warning' => 'minor_issues',
-                        'orange' => 'major_issues',
-                        'danger' => 'parts_only',
+                        'fully_functional' => 'success',
+                        'minor_issues' => 'warning',
+                        'major_issues' => 'orange',
+                        'parts_only' => 'danger',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'fully_functional' => 'Fully Functional',
@@ -422,9 +415,19 @@ class UsedDeviceResource extends Resource
                         default => ucfirst(str_replace('_', ' ', $state)),
                     }),
 
-                TextColumn::make('listing_status')
+                BadgeColumn::make('listing_status')
                     ->label('Listing Status')
-                    ->badge()
+                    ->colors([
+                        'acquired' => 'gray',
+                        'inspecting' => 'info',
+                        'refurbishing' => 'warning',
+                        'ready_for_sale' => 'success',
+                        'listed' => 'primary',
+                        'reserved' => 'orange',
+                        'sold' => 'success',
+                        'returned' => 'danger',
+                        'written_off' => 'gray',
+                    ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'acquired' => 'Acquired',
                         'inspecting' => 'Inspecting',
@@ -436,17 +439,6 @@ class UsedDeviceResource extends Resource
                         'returned' => 'Returned',
                         'written_off' => 'Written Off',
                         default => ucfirst(str_replace('_', ' ', $state)),
-                    })
-                    ->getColorUsing(fn (string $state): string => match ($state) {
-                        'acquired' => 'gray',
-                        'inspecting' => 'info',
-                        'refurbishing' => 'warning',
-                        'ready_for_sale' => 'success',
-                        'listed' => 'primary',
-                        'reserved' => 'orange',
-                        'sold' => 'success',
-                        'returned' => 'danger',
-                        'written_off' => 'gray',
                     }),
 
                 TextColumn::make('acquisition_cost')

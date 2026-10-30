@@ -4,6 +4,7 @@ namespace App\Filament\Resources\SalePaymentResource\Pages;
 
 use App\Filament\Resources\SalePaymentResource;
 use App\Models\Sale;
+use App\Models\Tenant;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateSalePayment extends CreateRecord
