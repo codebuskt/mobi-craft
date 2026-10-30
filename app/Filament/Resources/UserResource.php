@@ -55,7 +55,7 @@ class UserResource extends Resource
                             ->image()
                             ->directory('users/avatars')
                             ->maxSize(512)
-                            ->circular()
+                            ->imagePreviewHeight('150')
                             ->columnSpanFull(),
                     ])->columns(2),
 
