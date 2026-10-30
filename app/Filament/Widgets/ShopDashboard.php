@@ -32,8 +32,7 @@ class ShopDashboard extends BaseWidget
 
         $lowStockCount = Product::query()
             ->when($tenantId, fn ($q) => $q->where('tenant_id', $tenantId))
-            ->where('is_active', true)
-            ->where('track_quantity', true)
+            ->where('status', 'active')
             ->whereRaw('stock_quantity <= reorder_level')
             ->count();
 

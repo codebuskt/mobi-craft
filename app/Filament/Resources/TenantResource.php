@@ -81,6 +81,32 @@ class TenantResource extends Resource
                         Forms\Components\DateTimePicker::make('subscription_ends_at')
                             ->label('Subscription Ends At'),
                     ])->columns(2),
+
+                Forms\Components\Section::make('Billing')
+                    ->schema([
+                        Forms\Components\TextInput::make('current_period_start')
+                            ->label('Current Period Start')
+                            ->date()
+                            ->default(now()->startOfMonth())
+                            ->readonly(),
+                        Forms\Components\TextInput::make('current_period_end')
+                            ->label('Current Period End')
+                            ->date()
+                            ->default(now()->endOfMonth())
+                            ->readonly(),
+                        Forms\Components\TextInput::make('invoice_count')
+                            ->label('Invoice Count')
+                            ->numeric()
+                            ->default(0)
+                            ->readonly(),
+                        Forms\Components\TextInput::make('amount_due')
+                            ->label('Amount Due (BDT)')
+                            ->numeric()
+                            ->step(0.01)
+                            ->prefix('৳')
+                            ->default(0)
+                            ->readonly(),
+                    ])->columns(2),
             ]);
     }
 

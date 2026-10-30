@@ -218,6 +218,7 @@ class InventoryLocationResource extends Resource
 
     public static function getPages(): array
     {
+     
         return [
             'index' => Pages\ListInventoryLocations::route('/'),
             'create' => Pages\CreateInventoryLocation::route('/create'),

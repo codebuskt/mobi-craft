@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ExpenseCategoryResource\Pages;
 
 use App\Filament\Resources\ExpenseCategoryResource;
+use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListExpenseCategories extends ListRecords
@@ -12,7 +13,7 @@ class ListExpenseCategories extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateExpenseCategory::make(),
+            Actions\CreateAction::make(),
         ];
     }
 }
