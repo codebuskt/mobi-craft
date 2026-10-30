@@ -254,8 +254,7 @@ class StockMovementResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Date')
                     ->dateTime()
-                    ->sortable()
-                    ->defaultSort('desc'),
+                    ->sortable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('type')

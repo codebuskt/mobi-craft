@@ -581,7 +581,6 @@ class UsedDeviceResource extends Resource
                     ->label('Mark as Sold')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
-                    ->confirmButtonColor('green')
                     ->modalHeading('Mark Device as Sold')
                     ->modalDescription('This will change the status to Sold and record the sale price.')
                     ->form([

@@ -3,37 +3,28 @@
 namespace App\Filament\Resources\InvoiceResource\Pages;
 
 use App\Filament\Resources\InvoiceResource;
-use App\Models\Invoice;
-use App\Models\SubscriptionPlan;
-use App\Models\Tenant;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Resources\Pages\CreateableDeleteableAction;
-use Filament\Resources\Pages\Page;
+use Filament\Resources\Pages\CreateRecord;
+use Filament\Resources\Pages\EditRecord;
+use Filament\Resources\Pages\ListRecords;
+use Filament\Actions\CreateAction;
 
-class ListInvoices extends Page
+class ListInvoices extends ListRecords
 {
     protected static string $resource = InvoiceResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            \Filament\Actions\CreateAction::make(),
-        ];
-    }
-
-    protected function getFormSchema(): array
-    {
-        return [
-            //
+            CreateAction::make(),
         ];
     }
 }
 
-class CreateInvoice extends Page
+class CreateInvoice extends CreateRecord
 {
     protected static string $resource = InvoiceResource::class;
 
@@ -131,7 +122,7 @@ class CreateInvoice extends Page
     }
 }
 
-class EditInvoice extends Page
+class EditInvoice extends EditRecord
 {
     protected static string $resource = InvoiceResource::class;
 
