@@ -160,7 +160,7 @@ class UsedDeviceResource extends Resource
                             ->maxLength(500)
                             ->label('Inspection Notes')
                             ->placeholder('Notes from condition inspection'),
-                        Select\Select::make('inspection_checklist')
+                        Select::make('inspection_checklist')
                             ->label('Inspection Checklist')
                             ->multiple()
                             ->options([
