@@ -72,7 +72,7 @@ class CreateInvoice extends Page
 
             DatePicker::make('due_date')
                 ->label('Due Date')
-                ->default(fn (?) => now()->addMonth()->toDateString()),
+                ->default(fn () => now()->addMonth()->toDateString()),
 
             TextInput::make('subtotal')
                 ->label('Subtotal (BDT)')
@@ -170,7 +170,7 @@ class EditInvoice extends Page
 
             DatePicker::make('due_date')
                 ->label('Due Date')
-                ->default(fn (?) => now()->addMonth()->toDateString()),
+                ->default(fn () => now()->addMonth()->toDateString()),
 
             TextInput::make('subtotal')
                 ->label('Subtotal (BDT)')

@@ -93,7 +93,7 @@ class InvoiceResource extends Resource
                             ->default(now()->endOfMonth()),
                         Forms\Components\DatePicker::make('due_date')
                             ->label('Due Date')
-                            ->default(fn (?) => now()->addMonth()->toDateString()),
+                            ->default(fn () => now()->addMonth()->toDateString()),
                     ]),
 
                 Forms\Components\Section::make('Payment Information')
