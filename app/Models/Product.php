@@ -48,6 +48,7 @@ class Product extends Model
         'meta_description',
         'meta_keywords',
         'is_pos_visible',
+        'is_published',
         'is_featured',
         'sort_order',
         'preferred_supplier_id',
@@ -73,6 +74,7 @@ class Product extends Model
         'track_imei' => 'boolean',
         'tax_inclusive' => 'boolean',
         'is_pos_visible' => 'boolean',
+        'is_published' => 'boolean',
         'is_featured' => 'boolean',
         'sort_order' => 'integer',
     ];
@@ -365,6 +367,14 @@ class Product extends Model
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true);
+    }
+
+    /**
+     * Scope for published products (storefront visible).
+     */
+    public function scopePublished($query)
+    {
+        return $query->where('is_published', true);
     }
 
     /**

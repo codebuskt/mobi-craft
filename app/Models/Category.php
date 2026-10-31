@@ -22,6 +22,7 @@ class Category extends Model
         'sort_order',
         'is_active',
         'is_service',
+        'is_storefront_visible',
         'meta_title',
         'meta_description',
     ];
@@ -29,6 +30,7 @@ class Category extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'is_service' => 'boolean',
+        'is_storefront_visible' => 'boolean',
         'sort_order' => 'integer',
     ];
 
@@ -124,5 +126,13 @@ class Category extends Model
         }
 
         return $query->whereNull('tenant_id');
+    }
+
+    /**
+     * Scope for storefront visible categories.
+     */
+    public function scopeStorefrontVisible($query)
+    {
+        return $query->where('is_storefront_visible', true);
     }
 }

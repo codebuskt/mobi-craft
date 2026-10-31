@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureEmailIsVerified;
+use App\Http\Middleware\StorefrontMiddleware;
 use App\Http\Middleware\TenantMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -15,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Added by EnvKit so shared (public) URLs keep the https scheme and
+        // public host. Safe locally; remove to opt out.
+        $middleware->trustProxies(at: '*');
         $middleware->api(prepend: [
             EnsureFrontendRequestsAreStateful::class,
         ]);
@@ -24,9 +28,11 @@ return Application::configure(basePath: dirname(__DIR__))
             TenantMiddleware::class,
         ]);
 
+        // Storefront middleware alias
         $middleware->alias([
             'verified' => EnsureEmailIsVerified::class,
             'tenant' => TenantMiddleware::class,
+            'storefront' => StorefrontMiddleware::class,
         ]);
 
         //

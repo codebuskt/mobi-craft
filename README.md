@@ -91,6 +91,40 @@ php artisan serve
 - **Super Admin**: `super-admin@mobicraft.test` / `password`
 - **Admin Panel**: `http://localhost:8000/admin`
 
+### Demo Data & Factories
+MobiCraft includes comprehensive factory classes for generating realistic demo data:
+
+```bash
+# Full fresh migration with seed (creates demo data)
+php artisan migrate:fresh --seed
+
+# Or seed demo data into existing database
+php artisan db:seed --class=DatabaseSeeder
+```
+
+#### Available Factories
+| Factory | Description | States |
+|---------|-------------|--------|
+| `TenantFactory` | SaaS tenants with subscription | `active`, `trial`, `suspended`, `expired` |
+| `ShopProfileFactory` | Shop configuration | `complete`, `incomplete` |
+| `CategoryFactory` | Product/service categories | `active`, `inactive`, `service`, `child` |
+| `BrandFactory` | Product brands | `active`, `inactive` |
+| `ProductFactory` | Products with pricing & stock | `active`, `inactive`, `featured`, `onSale`, `outOfStock`, `lowStock`, `serialized`, `forStorefront` |
+| `CustomerFactory` | Customers with storefront auth | `active`, `inactive`, `blocked`, `verified`, `unverified`, `walkIn`, `regular`, `corporate`, `wholesale`, `withCredit`, `overdue`, `forStorefront`, `highValue` |
+| `RepairTicketFactory` | Repair workflow tickets | `received`, `diagnosing`, `waitingApproval`, `inRepair`, `readyDelivery`, `delivered`, `cancelled`, `highPriority`, `urgent`, `withWarranty`, `overdue`, `underWarranty`, `fullyPaid`, `partialPaid` |
+| `SupplierFactory` | Suppliers with credit terms | `active`, `inactive`, `blocked`, `manufacturer`, `distributor`, `wholesaler`, `importer`, `localVendor`, `serviceProvider`, `withCredit`, `preferred`, `highVolume` |
+| `PurchaseOrderFactory` | Purchase orders with approval | `draft`, `pendingApproval`, `approved`, `ordered`, `partialReceived`, `received`, `cancelled`, `fullyPaid`, `partialPaid`, `overdue`, `highValue` |
+| `SaleFactory` | POS sales transactions | `draft`, `pending`, `completed`, `cancelled`, `refunded`, `partiallyPaid`, `walkIn`, `withCustomer`, `today`, `thisWeek`, `thisMonth`, `highValue`, `cash`, `card`, `mobileBanking` |
+| `SaleItemFactory` | Sale line items | `noDiscount`, `withDiscount`, `taxExempt`, `service`, `highQuantity` |
+| `PurchaseOrderItemFactory` | PO line items | `received`, `partiallyReceived`, `notReceived`, `noDiscount`, `taxExempt` |
+| `UserFactory` | Admin panel users | `unverified`, `inactive`, `superAdmin`, `tenantAdmin`, `manager`, `staff`, `technician`, `cashier`, `salesPerson` |
+| `RoleFactory` | RBAC roles with permissions | `system`, `tenantScoped`, `superAdmin`, `tenantAdmin`, `manager`, `staff`, `technician`, `cashier`, `salesPerson`, `accountant`, `inventoryManager` |
+| `InventoryLocationFactory` | Stock locations | `warehouse`, `shopFloor`, `repairBay`, `showroom`, `storage`, `default`, `inactive`, `child`, `withManager` |
+| `SalePaymentFactory` | Sale payments | `cash`, `card`, `mobileBanking`, `bankTransfer`, `credit`, `forSale` |
+| `CustomerPaymentFactory` | Customer dues payments | `cash`, `card`, `mobileBanking`, `forCustomer` |
+| `CustomerDueFactory` | Customer outstanding dues | `pending`, `partial`, `paid`, `overdue`, `cancelled`, `highValue`, `forCustomer` |
+| `RepairDeviceFactory` | Devices in repair | `newDevice`, `diagnosed`, `repaired`, `ready`, `delivered`, `defunct`, `withProduct` |
+
 ---
 
 ## Project Structure
@@ -255,7 +289,14 @@ Full OpenAPI spec available at `/api/documentation` (when implemented).
 - [x] **Phase 3** - Financial & Staff (Payroll, Advanced Reports)
 - [x] **Phase 4** - Used Devices (IMEI Tracking, Refurbishment)
 - [x] **Phase 5** - SaaS Commercialization (Billing, Payments)
-- [ ] **Phase 6** - Customer Storefront (Public Shop)
+- [x] **Phase 6** - Customer Storefront (Public Shop)
+  - [x] Public home page with featured products & repair tracking
+  - [x] Product catalog with filtering & search
+  - [x] Customer authentication (login/register/password reset)
+  - [x] Repair ticket tracking by ticket number
+  - [x] Contact page with shop info
+  - [x] Tailwind CSS v3 with Vite asset compilation
+  - [x] Dark mode support
 - [ ] **Phase 7** - Expansion (Flutter App, AI, Multi-branch)
 
 ---

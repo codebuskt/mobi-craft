@@ -2,14 +2,20 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
+use App\Models\Customer;
 use App\Models\Permission;
+use App\Models\Product;
 use App\Models\Role;
+use App\Models\Sale;
+use App\Models\SaleItem;
+use App\Models\SalePayment;
 use App\Models\SubscriptionPlan;
+use App\Models\Supplier;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,6 +28,7 @@ class DatabaseSeeder extends Seeder
         $this->seedSubscriptionPlans();
         $this->seedSystemSuperAdmin();
         $this->seedDefaultShopProfile();
+        $this->seedDemoData();
     }
 
     /**
@@ -160,6 +167,9 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
+
+        $this->command->info('Seeded roles: '.Role::count());
+        $this->command->info('Seeded permissions: '.Permission::count());
     }
 
     /**
@@ -255,6 +265,8 @@ class DatabaseSeeder extends Seeder
                 'slug' => $planData['slug'],
             ], $planData);
         }
+
+        $this->command->info('Seeded subscription plans: '.SubscriptionPlan::count());
     }
 
     /**
@@ -275,7 +287,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'super-admin@mobicraft.test',
         ], [
             'name' => 'Super Admin',
-            'password' => Hash::make('password'),
+            'password' => bcrypt('password'),
             'phone' => '+8801700000000',
             'tenant_id' => $tenant->id,
             'status' => true,
@@ -304,8 +316,22 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        // Create a tenant admin user
+        $tenantAdmin = User::firstOrCreate([
+            'email' => 'tenant-admin@mobicraft.test',
+        ], [
+            'name' => 'Tenant Admin',
+            'password' => bcrypt('password'),
+            'phone' => '+8801700000001',
+            'tenant_id' => $tenant->id,
+            'status' => true,
+        ]);
+        $tenantAdmin->role()->associate($superAdminRole);
+        $tenantAdmin->save();
+
         // Log the seeded data
         $this->command->info("Seeded super admin: {$superAdmin->email}");
+        $this->command->info("Seeded tenant admin: {$tenantAdmin->email}");
         $this->command->info("Seeded tenant: {$tenant->name} ({$tenant->slug})");
         $this->command->info('Seeded roles: '.Role::count());
         $this->command->info('Seeded permissions: '.Permission::count());
@@ -369,5 +395,328 @@ class DatabaseSeeder extends Seeder
 
             $this->command->info("Seeded default shop profile for: {$tenant->name}");
         }
+    }
+
+    /**
+     * Seed demo data for the storefront and admin panel.
+     */
+    protected function seedDemoData(): void
+    {
+        $tenant = Tenant::first();
+
+        if (! $tenant) {
+            $this->command->warn('No tenant found - skipping demo data seeding');
+            return;
+        }
+
+        // Seed demo categories
+        $categories = [
+            'Smartphones' => ['category' => 'product'],
+            'Tablets' => ['category' => 'product'],
+            'Laptops' => ['category' => 'product'],
+            'Accessories' => ['category' => 'accessory'],
+            'Screen Repair' => ['category' => 'service'],
+            'Battery Replacement' => ['category' => 'service'],
+            'Software Repair' => ['category' => 'service'],
+            'Diagnostics' => ['category' => 'diagnostic'],
+        ];
+
+        foreach ($categories as $name => $data) {
+            Category::firstOrCreate([
+                'tenant_id' => $tenant->id,
+                'slug' => \Illuminate\Support\Str::slug($name),
+            ], [
+                'tenant_id' => $tenant->id,
+                'name' => $name,
+                'description' => 'Repair service: '.$name,
+                'is_service' => $data['category'] === 'service',
+                'is_storefront_visible' => true,
+            ]);
+        }
+
+        $this->command->info('Seeded categories: '.Category::count());
+
+        // Seed demo products using ProductFactory
+        Product::count(); // reset count for display
+
+        // Active products
+        $activeProducts = 20;
+        $activeCount = 0;
+        for ($i = 0; $i < $activeProducts; $i++) {
+            $product = Product::factory()->active()->forStorefront()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+            $activeCount++;
+        }
+
+        // Inactive products
+        $inactiveProducts = 5;
+        for ($i = 0; $i < $inactiveProducts; $i++) {
+            Product::factory()->inactive()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        // Featured products
+        $featuredProducts = 3;
+        for ($i = 0; $i < $featuredProducts; $i++) {
+            Product::factory()->featured()->forStorefront()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        // On sale products
+        $onSaleProducts = 4;
+        for ($i = 0; $i < $onSaleProducts; $i++) {
+            Product::factory()->onSale()->forStorefront()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $this->command->info('Seeded products: '.$activeCount.' active, '.$inactiveProducts.' inactive, '.$featuredProducts.' featured, '.$onSaleProducts.' on sale');
+
+        // Seed demo customers using CustomerFactory
+        $activeCustomers = 25;
+        $activeCustCount = 0;
+        for ($i = 0; $i < $activeCustomers; $i++) {
+            $customer = Customer::factory()->active()->verified()->forStorefront()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+            $activeCustCount++;
+        }
+
+        $inactiveCustomers = 5;
+        for ($i = 0; $i < $inactiveCustomers; $i++) {
+            Customer::factory()->inactive()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $highValueCustomers = 3;
+        for ($i = 0; $i < $highValueCustomers; $i++) {
+            Customer::factory()->corporate()->forStorefront()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $this->command->info('Seeded customers: '.$activeCustCount.' active, '.$inactiveCustomers.' inactive, '.$highValueCustomers.' corporate');
+
+        // Seed demo repair tickets
+        $receivedTickets = 15;
+        for ($i = 0; $i < $receivedTickets; $i++) {
+            RepairTicket::factory()->received()->forStorefront()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $diagnosingTickets = 10;
+        for ($i = 0; $i < $diagnosingTickets; $i++) {
+            RepairTicket::factory()->diagnosing()->forStorefront()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $deliveredTickets = 25;
+        for ($i = 0; $i < $deliveredTickets; $i++) {
+            RepairTicket::factory()->delivered()->forStorefront()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $cancelledTickets = 3;
+        for ($i = 0; $i < $cancelledTickets; $i++) {
+            RepairTicket::factory()->cancelled()->forStorefront()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $this->command->info('Seeded repair tickets: '.$receivedTickets.' received, '.$diagnosingTickets.' diagnosing, '.$deliveredTickets.' delivered, '.$cancelledTickets.' cancelled');
+
+        // Seed demo suppliers
+        $activeSuppliers = 8;
+        for ($i = 0; $i < $activeSuppliers; $i++) {
+            Supplier::factory()->active()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $inactiveSuppliers = 2;
+        for ($i = 0; $i < $inactiveSuppliers; $i++) {
+            Supplier::factory()->inactive()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $this->command->info('Seeded suppliers: '.$activeSuppliers.' active, '.$inactiveSuppliers.' inactive');
+
+        // Seed demo purchase orders
+        $draftPOs = 10;
+        for ($i = 0; $i < $draftPOs; $i++) {
+            PurchaseOrder::factory()->draft()->forStorefront()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $pendingApprovalPOs = 8;
+        for ($i = 0; $i < $pendingApprovalPOs; $i++) {
+            PurchaseOrder::factory()->pendingApproval()->forStorefront()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $approvedPOs = 6;
+        for ($i = 0; $i < $approvedPOs; $i++) {
+            PurchaseOrder::factory()->approved()->forStorefront()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $this->command->info('Seeded purchase orders: '.$draftPOs.' draft, '.$pendingApprovalPOs.' pending, '.$approvedPOs.' approved');
+
+        // Seed demo sales
+        $draftSales = 8;
+        for ($i = 0; $i < $draftSales; $i++) {
+            Sale::factory()->draft()->forStorefront()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $completedSales = 20;
+        for ($i = 0; $i < $completedSales; $i++) {
+            Sale::factory()->completed()->forStorefront()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $cancelledSales = 3;
+        for ($i = 0; $i < $cancelledSales; $i++) {
+            Sale::factory()->cancelled()->forStorefront()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $this->command->info('Seeded sales: '.$draftSales.' draft, '.$completedSales.' completed, '.$cancelledSales.' cancelled');
+
+        // Seed sale items
+        $this->command->info('Seeding sale items...');
+
+        // Sale items for completed sales
+        $completedSales = Sale::where('status', 'completed')->where('tenant_id', $tenant->id)->take(5)->get();
+        foreach ($completedSales as $sale) {
+            for ($i = 0; $i < fake()->numberBetween(1, 5); $i++) {
+                SaleItem::factory()->create([
+                    'tenant_id' => $tenant->id,
+                    'sale_id' => $sale->id,
+                ]);
+            }
+        }
+
+        // Sale items for draft sales
+        $draftSales = Sale::where('status', 'draft')->where('tenant_id', $tenant->id)->take(3)->get();
+        foreach ($draftSales as $sale) {
+            for ($i = 0; $i < fake()->numberBetween(1, 3); $i++) {
+                SaleItem::factory()->noDiscount()->create([
+                    'tenant_id' => $tenant->id,
+                    'sale_id' => $sale->id,
+                ]);
+            }
+        }
+
+        // Seed sale payments
+        $completedSales2 = Sale::where('status', 'completed')->where('tenant_id', $tenant->id)->take(8)->get();
+        foreach ($completedSales2 as $sale) {
+            // Cash payment
+            SalePayment::factory()->cash()->forSale($sale)->create([
+                'tenant_id' => $tenant->id,
+            ]);
+            // Card payment
+            SalePayment::factory()->card()->forSale($sale)->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        // Customer payments
+        $activeCustomers2 = Customer::where('status', 'active')->where('tenant_id', $tenant->id)->take(5)->get();
+        foreach ($activeCustomers2 as $customer) {
+            CustomerPayment::factory()->forCustomer($customer)->cash()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        // Customer dues
+        $activeCustomers3 = Customer::where('status', 'active')->where('tenant_id', $tenant->id)->take(5)->get();
+        foreach ($activeCustomers3 as $customer) {
+            CustomerDue::factory()->forCustomer($customer)->pending()->create([
+                'tenant_id' => $tenant->id,
+            ]);
+        }
+
+        $this->command->info('Seeded sale items, payments, and dues');
+
+        // Seed inventory locations
+        InventoryLocation::factory()->warehouse()->forStorefront()->create([
+            'tenant_id' => $tenant->id,
+        ]);
+
+        InventoryLocation::factory()->shopFloor()->forStorefront()->create([
+            'tenant_id' => $tenant->id,
+        ]);
+
+        InventoryLocation::factory()->repairBay()->forStorefront()->create([
+            'tenant_id' => $tenant->id,
+        ]);
+
+        $this->command->info('Seeded inventory locations');
+
+        // Seed inventory users
+        $superAdminRole = Role::where('slug', 'super_admin')->firstOrFail();
+
+        // Create tenant admin
+        User::firstOrCreate([
+            'email' => 'tenant-admin@demo.mobicraft.test',
+        ], [
+            'name' => 'Tenant Admin',
+            'password' => bcrypt('password'),
+            'phone' => '+8801700000001',
+            'tenant_id' => $tenant->id,
+            'status' => true,
+        ])->role()->associate($superAdminRole);
+
+        // Create manager
+        User::firstOrCreate([
+            'email' => 'manager@demo.mobicraft.test',
+        ], [
+            'name' => 'Shop Manager',
+            'password' => bcrypt('password'),
+            'phone' => '+8801700000002',
+            'tenant_id' => $tenant->id,
+            'status' => true,
+        ])->role()->associate(Role::where('slug', 'manager')->firstOrFail());
+
+        // Create cashier
+        User::firstOrCreate([
+            'email' => 'cashier@demo.mobicraft.test',
+        ], [
+            'name' => 'Cashier',
+            'password' => bcrypt('password'),
+            'phone' => '+8801700000003',
+            'tenant_id' => $tenant->id,
+            'status' => true,
+        ])->role()->associate(Role::where('slug', 'cashier')->firstOrFail());
+
+        // Create technician
+        User::firstOrCreate([
+            'email' => 'tech@demo.mobicraft.test',
+        ], [
+            'name' => 'Technician',
+            'password' => bcrypt('password'),
+            'phone' => '+8801700000004',
+            'tenant_id' => $tenant->id,
+            'status' => true,
+        ])->role()->associate(Role::where('slug', 'technician')->firstOrFail());
+
+        $this->command->info('Seeded admin users');
+
+        $this->command->info('=== Demo Data Seeding Complete ===');
     }
 }

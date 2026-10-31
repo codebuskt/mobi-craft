@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Auth\Passwords\CanResetPassword;
 
-class Customer extends Model
+class Customer extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-    use SoftDeletes;
+    use SoftDeletes, Authenticatable, CanResetPassword;
 
     protected $fillable = [
         'tenant_id',
@@ -40,6 +44,17 @@ class Customer extends Model
         'total_purchases',
         'total_repairs',
         'lifetime_value',
+        // Storefront auth fields
+        'password',
+        'email_verified_at',
+        'remember_token',
+        'last_login_at',
+        'storefront_preferences',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     protected $casts = [
@@ -49,8 +64,11 @@ class Customer extends Model
         'date_of_birth' => 'date',
         'tags' => 'array',
         'preferences' => 'array',
+        'storefront_preferences' => 'array',
         'last_purchase_at' => 'datetime',
         'last_repair_at' => 'datetime',
+        'email_verified_at' => 'datetime',
+        'last_login_at' => 'datetime',
     ];
 
     /**
@@ -252,6 +270,39 @@ class Customer extends Model
         }
 
         return $query->whereNull('tenant_id');
+    }
+
+    /**
+     * Scope for customers with storefront access (active + verified email).
+     */
+    public function scopeStorefrontAccess($query)
+    {
+        return $query->where('status', 'active')
+            ->whereNotNull('email_verified_at');
+    }
+
+    /**
+     * Get the password for authentication.
+     */
+    public function getAuthPassword(): string
+    {
+        return $this->password ?? '';
+    }
+
+    /**
+     * Get the email for password reset.
+     */
+    public function getEmailForPasswordReset(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * Send password reset notification.
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new \App\Notifications\Storefront\CustomerResetPassword($token));
     }
 
     /**

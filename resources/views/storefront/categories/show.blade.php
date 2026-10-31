@@ -1,0 +1,170 @@
+@extends('storefront.layouts.app')
+
+@section('title', $category->name . ' - ' . $shopProfile->business_name)
+
+@section('description', $category->description)
+
+@section('content')
+<div class="bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Breadcrumbs -->
+        <nav class="mb-6" aria-label="Breadcrumb">
+            <ol class="flex items-center gap-2 text-sm text-gray-500">
+                <li><a href="{{ route('storefront.home') }}" class="hover:text-primary-600">{{ __('storefront.header.home') }}</a></li>
+                <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+                <li><a href="{{ route('storefront.categories.index') }}" class="hover:text-primary-600">{{ __('storefront.categories.title') }}</a></li>
+                @foreach($ancestors as $ancestor)
+                    <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+                    <li><a href="{{ route('storefront.categories.show', $ancestor->slug) }}" class="hover:text-primary-600">{{ $ancestor->name }}</a></li>
+                @endforeach
+                <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+                <li class="text-gray-900 font-medium truncate max-w-xs">{{ $category->name }}</li>
+            </ol>
+        </nav>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar Filters -->
+            <aside class="lg:w-64 flex-shrink-0">
+                <div class="bg-white rounded-xl border border-gray-100 p-6 sticky top-24">
+                    <!-- Subcategories -->
+                    @if($subcategories && $subcategories->count() > 0)
+                        <div class="mb-6">
+                            <h3 class="font-semibold text-gray-900 mb-4">{{ __('storefront.categories.subcategories') }}</h3>
+                            <ul class="space-y-2">
+                                @foreach($subcategories as $subcategory)
+                                    <li>
+                                        <a href="{{ route('storefront.categories.show', $subcategory->slug) }}" class="flex items-center gap-2 text-sm text-gray-700 hover:text-primary-600 transition-colors">
+                                            <span class="flex-1 truncate">{{ $subcategory->name }}</span>
+                                            <span class="text-xs text-gray-400 whitespace-nowrap">({{ $subcategory->products_count }})</span>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <!-- Brands in this category -->
+                    @if($brands && $brands->count() > 0)
+                        <div class="mb-6">
+                            <h3 class="font-semibold text-gray-900 mb-4">{{ __('storefront.products.brands') }}</h3>
+                            <ul class="space-y-2 max-h-48 overflow-y-auto">
+                                @foreach($brands as $brand)
+                                    <li>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" name="brand" value="{{ $brand->id }}" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                                            <span class="text-sm text-gray-700">{{ $brand->name }}</span>
+                                        </label>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <!-- Price Range -->
+                    <div class="mb-6">
+                        <h3 class="font-semibold text-gray-900 mb-4">{{ __('storefront.products.price_range') }}</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" name="price_range" value="0-5000" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                                <span class="text-sm text-gray-700">{{ __('storefront.products.under_5k') }}</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" name="price_range" value="5000-15000" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                                <span class="text-sm text-gray-700">{{ __('storefront.products.5k_15k') }}</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" name="price_range" value="15000-30000" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                                <span class="text-sm text-gray-700">{{ __('storefront.products.15k_30k') }}</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" name="price_range" value="30000-999999" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                                <span class="text-sm text-gray-700">{{ __('storefront.products.over_30k') }}</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Stock Filter -->
+                    <div class="mb-6">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" name="in_stock_only" value="1" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500" {{ request('in_stock_only') ? 'checked' : '' }}>
+                            <span class="text-sm text-gray-700">{{ __('storefront.products.in_stock_only') }}</span>
+                        </label>
+                    </div>
+
+                    <!-- Clear Filters -->
+                    @if(request()->hasAny(['brand', 'price_range', 'min_price', 'max_price', 'in_stock_only', 'sort']))
+                        <a href="{{ route('storefront.categories.show', $category->slug) }}" class="w-full text-center text-primary-600 hover:underline text-sm font-medium">{{ __('storefront.products.clear_filters') }}</a>
+                    @endif
+                </div>
+            </aside>
+
+            <!-- Products Grid -->
+            <div class="flex-1">
+                <!-- Category Header -->
+                <div class="mb-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                        <div>
+                            @if($category->parent)
+                                <a href="{{ route('storefront.categories.show', $category->parent->slug) }}" class="text-sm text-primary-600 hover:underline mb-2 inline-block">{{ $category->parent->name }}</a>
+                            @endif
+                            <h1 class="text-3xl font-bold text-gray-900">{{ $category->name }}</h1>
+                            @if($category->description)
+                                <p class="mt-2 text-gray-600">{{ $category->description }}</p>
+                            @endif
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-gray-500">
+                            <span>{{ $products->total() }} {{ __('storefront.products.found') }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="bg-white rounded-xl border border-gray-100 p-4 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <!-- View Toggle -->
+                        <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                            <button type="button" class="px-3 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-50" aria-label="Grid view">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                            </button>
+                            <button type="button" class="px-3 py-2 text-primary-600 bg-primary-50 border-l border-gray-200" aria-label="List view">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                            </button>
+                        </div>
+
+                        <!-- Sort -->
+                        <select id="sort-select" class="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" onchange="window.location.href = this.value">
+                            <option value="{{ route('storefront.categories.show', array_merge([$category->slug], request()->query(), ['sort' => 'newest'])) }}" {{ $sort === 'newest' ? 'selected' : '' }}>{{ __('storefront.products.sort_newest') }}</option>
+                            <option value="{{ route('storefront.categories.show', array_merge([$category->slug], request()->query(), ['sort' => 'price_asc'])) }}" {{ $sort === 'price_asc' ? 'selected' : '' }}>{{ __('storefront.products.sort_price_asc') }}</option>
+                            <option value="{{ route('storefront.categories.show', array_merge([$category->slug], request()->query(), ['sort' => 'price_desc'])) }}" {{ $sort === 'price_desc' ? 'selected' : '' }}>{{ __('storefront.products.sort_price_desc') }}</option>
+                            <option value="{{ route('storefront.categories.show', array_merge([$category->slug], request()->query(), ['sort' => 'name_asc'])) }}" {{ $sort === 'name_asc' ? 'selected' : '' }}>{{ __('storefront.products.sort_name_asc') }}</option>
+                            <option value="{{ route('storefront.categories.show', array_merge([$category->slug], request()->query(), ['sort' => 'name_desc'])) }}" {{ $sort === 'name_desc' ? 'selected' : '' }}>{{ __('storefront.products.sort_name_desc') }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                @if($products->count() > 0)
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="products-grid">
+                        @foreach($products as $product)
+                            @include('storefront.partials.product-card', ['product' => $product, 'variant' => 'grid'])
+                        @endforeach
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="mt-8 flex justify-center">
+                        {{ $products->links('pagination::tailwind') }}
+                    </div>
+                @else
+                    <!-- Empty State -->
+                    <div class="text-center py-16">
+                        <svg class="w-24 h-24 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                        <h3 class="mt-4 text-lg font-medium text-gray-900">{{ __('storefront.products.no_products_in_category') }}</h3>
+                        <p class="mt-2 text-gray-500">{{ __('storefront.products.no_products_in_category_desc') }}</p>
+                        <a href="{{ route('storefront.categories.index') }}" class="mt-6 inline-block text-primary-600 hover:underline">{{ __('storefront.products.browse_categories') }}</a>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
