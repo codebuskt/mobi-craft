@@ -21,7 +21,7 @@ class CheckoutController extends Controller
     /**
      * Display checkout page.
      */
-    public function index(): \Illuminate\View\View
+    public function index(): \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
     {
         $cart = $this->getCartWithProducts();
 
@@ -171,7 +171,7 @@ class CheckoutController extends Controller
     /**
      * Display order success page.
      */
-    public function success(Sale $order): \Illuminate\View\View
+    public function success(Sale $order): \Illuminate\Contracts\View\View
     {
         // Verify order belongs to current tenant
         if ($order->tenant_id !== app('tenant')->id) {

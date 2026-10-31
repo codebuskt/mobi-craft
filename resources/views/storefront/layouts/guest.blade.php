@@ -59,7 +59,7 @@
         window.storefront = {
             tenantId: {{ app('tenant')->id ?? 'null' }},
             locale: '{{ app()->getLocale() }}',
-            currencySymbol: '{{ shopProfile->currency_symbol ?? '৳' }}',
+            currencySymbol: '{{ $shopProfile->currency_symbol ?? '৳' }}',
             csrfToken: '{{ csrf_token() }}',
             routes: {
                 cartAdd: '{{ route('storefront.cart.add') }}',
