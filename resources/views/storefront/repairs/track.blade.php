@@ -14,7 +14,9 @@
                 <p class="text-gray-500 mt-2">{{ __('storefront.repairs.track_desc') }}</p>
             </div>
 
-            <form wire:submit.prevent="trackRepair" class="space-y-4">
+            <form method="POST" action="{{ route('storefront.repairs.track.post') }}" class="space-y-4">
+                @csrf
+
                 @if($errors->has('ticket_number'))
                     <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                         {{ $errors->first('ticket_number') }}
@@ -23,23 +25,18 @@
 
                 <div>
                     <label for="ticket_number" class="block text-sm font-medium text-gray-700 mb-1">{{ __('storefront.repairs.ticket_number') }} <span class="text-red-500">*</span></label>
-                    <input type="text" id="ticket_number" wire:model="ticketNumber" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" required autocomplete="off" placeholder="e.g., RPR-2024-001">
-                    @error('ticketNumber') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    <input type="text" id="ticket_number" name="ticket_number" value="{{ old('ticket_number') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" required autocomplete="off" placeholder="e.g., RPR-2024-001">
+                    @error('ticket_number') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
                     <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">{{ __('storefront.repairs.phone') }} <span class="text-red-500">*</span></label>
-                    <input type="tel" id="phone" wire:model="phone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" required autocomplete="tel" placeholder="01XXXXXXXXX">
+                    <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" required autocomplete="tel" placeholder="01XXXXXXXXX">
                     @error('phone') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
-                <button type="submit" class="w-full bg-primary-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
-                    :disabled="tracking" x-data="{ tracking: false }">
-                    <span x-show="!tracking">{{ __('storefront.repairs.track') }}</span>
-                    <span x-show="tracking">
-                        <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                        {{ __('storefront.repairs.tracking') }}
-                    </span>
+                <button type="submit" class="w-full bg-primary-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-primary-700 transition-colors">
+                    {{ __('storefront.repairs.track') }}
                 </button>
             </form>
 

@@ -20,16 +20,28 @@
         </div>
 
         <div class="bg-white rounded-xl border border-gray-100 p-8">
-            <form wire:submit.prevent="login" class="space-y-6">
-                @if($loginError)
+            <form method="POST" action="{{ route('storefront.account.login.post') }}" class="space-y-6">
+                @csrf
+
+                @if(session('error'))
                     <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                        {{ $loginError }}
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                        <ul class="list-disc list-inside space-y-1">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
                 @endif
 
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700 mb-1">{{ __('storefront.auth.email') }} <span class="text-red-500">*</span></label>
-                    <input type="email" id="email" wire:model="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" required autocomplete="email">
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" required autocomplete="email">
                     @error('email') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
@@ -38,25 +50,19 @@
                         <label for="password" class="block text-sm font-medium text-gray-700">{{ __('storefront.auth.password') }} <span class="text-red-500">*</span></label>
                         <a href="{{ route('storefront.account.password.request') }}" class="text-sm text-primary-600 hover:underline">{{ __('storefront.auth.forgot_password') }}</a>
                     </div>
-                    <input type="password" id="password" wire:model="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" required autocomplete="current-password">
+                    <input type="password" id="password" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" required autocomplete="current-password">
                     @error('password') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
                 <div class="flex items-center justify-between">
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" wire:model="remember" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                        <input type="checkbox" name="remember" value="1" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
                         <span class="text-sm text-gray-700">{{ __('storefront.auth.remember_me') }}</span>
                     </label>
                 </div>
 
-                <button type="submit" class="w-full bg-primary-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
-                    :disabled="loggingIn">
-                    @if($loggingIn)
-                        <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                        {{ __('storefront.auth.logging_in') }}
-                    @else
-                        {{ __('storefront.auth.login') }}
-                    @endif
+                <button type="submit" class="w-full bg-primary-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-primary-700 transition-colors">
+                    {{ __('storefront.auth.login') }}
                 </button>
             </form>
 
@@ -65,7 +71,7 @@
                 <a href="{{ route('storefront.account.register') }}" class="text-primary-600 hover:underline font-medium">{{ __('storefront.auth.register') }}</a>
             </div>
 
-            @if(shopProfile->getSetting('enable_guest_checkout', true))
+            @if($shopProfile->getSetting('enable_guest_checkout', true))
                 <div class="mt-6 pt-6 border-t text-center">
                     <p class="text-sm text-gray-500">{{ __('storefront.auth.guest_checkout') }}</p>
                     <a href="{{ route('storefront.checkout.index') }}" class="text-primary-600 hover:underline font-medium">{{ __('storefront.auth.continue_as_guest') }}</a>

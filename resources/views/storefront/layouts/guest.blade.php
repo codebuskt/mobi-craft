@@ -8,12 +8,12 @@
     <title>{{ $title ?? $shopProfile->business_name ?? 'MobiCraft Store' }}</title>
 
     <!-- Meta tags -->
-    <meta name="description" content="{{ $description ?? shopProfile->getSetting('meta_description', '') }}">
-    <meta name="keywords" content="{{ $keywords ?? shopProfile->getSetting('meta_keywords', '') }}">
+    <meta name="description" content="{{ $description ?? $shopProfile->getSetting('meta_description', '') }}">
+    <meta name="keywords" content="{{ $keywords ?? $shopProfile->getSetting('meta_keywords', '') }}">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="{{ $title ?? shopProfile->business_name }}">
-    <meta property="og:description" content="{{ $description ?? shopProfile->getSetting('meta_description', '') }}">
+    <meta property="og:title" content="{{ $title ?? $shopProfile->business_name }}">
+    <meta property="og:description" content="{{ $description ?? $shopProfile->getSetting('meta_description', '') }}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request()->url() }}">
     @if($shopProfile->logo)
@@ -47,7 +47,7 @@
 <body class="font-sans antialiased bg-gray-50 text-gray-900">
     <!-- Main Content -->
     <main class="min-h-screen">
-        {{ $slot }}
+        @yield('content')
     </main>
 
     <!-- Footer -->

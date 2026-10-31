@@ -59,12 +59,13 @@ class RepairTrackingController extends Controller
 
         $repair->load([
             'customer',
-            'device',
-            'statusLogs.changedBy',
-            'parts.product',
+            'devices', // RepairTicket has many devices
+            'statusHistories.changer',
+            'repairParts.product',
             'approvals',
-            'qualityCheck',
-            'delivery',
+            'qualityChecks',
+            'deliveries',
+            'assignedTechnician',
         ]);
 
         // Get status timeline
